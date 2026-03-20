@@ -1,11 +1,25 @@
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container (OpenAPI optional)
+// Add services to the container
 builder.Services.AddOpenApi();
+
+// 🔹 Add CORS to allow frontend requests
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("https://red-forest-009063e00.4.azurestaticapps.net") // your frontend URL
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
 
 var app = builder.Build();
 
-// Enable Swagger only in Development (optional)
+// 🔹 Enable CORS middleware before other middleware
+app.UseCors();
+
+// Enable Swagger only in Development
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
